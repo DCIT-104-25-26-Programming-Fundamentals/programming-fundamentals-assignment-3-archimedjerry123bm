@@ -59,4 +59,84 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readline = require('readline-sync');
 
+/**
+ * Helper function to print a formatted multiplication table for a single number.
+ * @param {number} num - The number to generate the table for.
+ */
+function printTableForNumber(num) {
+    console.log(`\nMultiplication Table for ${num}:`);
+    for (let i = 1; i <= 12; i++) {
+        const product = num * i;
+        // padStart keeps numbers aligned neatly when i >= 10
+        const formattedIndex = String(i).padStart(2, ' ');
+        console.log(`${num}  x  ${formattedIndex}  =  ${product}`);
+    }
+}
+
+/**
+ * Validates whether the input string is a valid positive integer (> 0).
+ * @param {string} input - Raw string from user.
+ * @returns {boolean} True if valid positive integer, false otherwise.
+ */
+function isValidPositiveInteger(input) {
+    const num = Number(input);
+    return Number.isInteger(num) && num > 0;
+}
+
+// -----------------------------------------------------------------------------
+// PART A — Single Table
+// -----------------------------------------------------------------------------
+function runPartA() {
+    console.log("=== PART A: Single Table ===");
+    const rawInput = readline.question("Enter a positive number: ");
+
+    if (!isValidPositiveInteger(rawInput)) {
+        console.log("Error: Invalid input. Please enter a positive integer greater than 0.");
+        return false; // Signal invalid input to caller
+    }
+
+    const number = parseInt(rawInput, 10);
+    printTableForNumber(number);
+    return true;
+}
+
+// -----------------------------------------------------------------------------
+// PART B — Bonus: Tables from 1 to N
+// -----------------------------------------------------------------------------
+function runPartB() {
+    console.log("\n=== PART B: Tables from 1 to N ===");
+    const rawInput = readline.question("Enter a positive number N: ");
+
+    if (!isValidPositiveInteger(rawInput)) {
+        console.log("Error: Invalid input. Please enter a positive integer greater than 0.");
+        return;
+    }
+
+    const n = parseInt(rawInput, 10);
+
+    for (let currentNum = 1; currentNum <= n; currentNum++) {
+        printTableForNumber(currentNum);
+        
+        // Print separator between tables, but omit it after the final table
+        if (currentNum < n) {
+            console.log("---------------------------");
+        }
+    }
+}
+
+// -----------------------------------------------------------------------------
+// MAIN EXECUTION
+// -----------------------------------------------------------------------------
+function main() {
+    const successA = runPartA();
+    
+    // Only proceed to Part B if Part A succeeds (or feel free to run both)
+    if (successA) {
+        console.log("\n" + "=".repeat(40));
+        runPartB();
+    }
+}
+
+main();
