@@ -83,5 +83,192 @@
 // =============================================================================
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
+const readline = require("readline-sync");
 
+// Main data store: array of student objects
+const studentDatabase = [];
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+/**
+ * Calculates the average of an array of numbers.
+ * @param {number[]} scores - Array of numerical test scores.
+ * @returns {number} The calculated average score.
+ */
+function computeAverage(scores) {
+  if (!scores || scores.length === 0) return 0;
+  const sum = scores.reduce((acc, score) => acc + score, 0);
+  return sum / scores.length;
+}
+
+// =============================================================================
+// CORE FEATURE FUNCTIONS
+// =============================================================================
+
+/**
+ * Feature 1: Add a Student
+ * Collects name, ID, and scores from user input and saves to database.
+ */
+function addStudent() {
+  console.log("\n--- Add a New Student ---");
+
+  const name = readline.question("Student name: ").trim();
+  if (!name) {
+    console.log("Error: Name cannot be empty.");
+    return;
+  }
+
+  const idInput = readline.question("Student ID: ");
+  const id = Number(idInput);
+  if (isNaN(id) || idInput.trim() === "") {
+    console.log("Error: Student ID must be a valid number.");
+    return;
+  }
+
+  // Check if ID already exists
+  const existingStudent = studentDatabase.find((student) => student.id === id);
+  if (existingStudent) {
+    console.log(`Error: A student with ID ${id} already exists.`);
+    return;
+  }
+
+  const scoreCountInput = readline.question("How many scores? ");
+  const scoreCount = parseInt(scoreCountInput, 10);
+
+  if (isNaN(scoreCount) || scoreCount < 1) {
+    console.log("Error: Please enter a valid number of scores (at least 1).");
+    return;
+  }
+
+  const scores = [];
+  for (let i = 1; i <= scoreCount; i++) {
+    const scoreInput = readline.question(`Enter score ${i}: `);
+    const score = Number(scoreInput);
+
+    if (isNaN(score) || score < 0 || score > 100) {
+      console.log("Invalid score! Please enter a number between 0 and 100.");
+      i--; // Retry this iteration
+      continue;
+    }
+
+    scores.push(score);
+  }
+
+  // Create student object and append to database
+  const newStudent = { name, id, scores };
+  studentDatabase.push(newStudent);
+
+  console.log(`\nStudent "${name}" added successfully.`);
+}
+
+/**
+ * Feature 2: Display All Students
+ * Prints a formatted list/table of all stored student records.
+ */
+function displayAllStudents() {
+  console.log("\n--- All Student Records ---");
+
+  if (studentDatabase.length === 0) {
+    console.log("No student records available yet.");
+    return;
+  }
+
+  // Table header formatting
+  console.log(
+    "-----------------------------------------------------------------------"
+  );
+  console.log(
+    `| ${"ID".padEnd(10)} | ${"Name".padEnd(20)} | ${"Scores".padEnd(18)} | ${"Average".padEnd(8)} |`
+  );
+  console.log(
+    "-----------------------------------------------------------------------"
+  );
+
+  studentDatabase.forEach((student) => {
+    const scoresStr = student.scores.join(", ");
+    const avgStr = computeAverage(student.scores).toFixed(2);
+
+    console.log(
+      `| ${String(student.id).padEnd(10)} | ${student.name.padEnd(20)} | ${scoresStr.padEnd(18)} | ${avgStr.padEnd(8)} |`
+    );
+  });
+
+  console.log(
+    "-----------------------------------------------------------------------"
+  );
+}
+
+/**
+ * Feature 3: Calculate Average Score for a Specific Student
+ * Prompts for student ID and outputs their exact average.
+ */
+function calculateAverage() {
+  console.log("\n--- Calculate Student Average ---");
+
+  if (studentDatabase.length === 0) {
+    console.log("No student records available to calculate.");
+    return;
+  }
+
+  const idInput = readline.question("Enter student ID: ");
+  const id = Number(idInput);
+
+  if (isNaN(id) || idInput.trim() === "") {
+    console.log("Error: Please enter a valid numerical ID.");
+    return;
+  }
+
+  const student = studentDatabase.find((s) => s.id === id);
+
+  if (!student) {
+    console.log(`Error: No student found with ID ${id}.`);
+  } else {
+    const avg = computeAverage(student.scores).toFixed(2);
+    console.log(`${student.name}'s average score: ${avg}`);
+  }
+}
+
+// =============================================================================
+// MAIN MENU & APPLICATION LOOP
+// =============================================================================
+
+function startApp() {
+  let isRunning = true;
+
+  while (isRunning) {
+    console.log("\n==================================");
+    console.log("   STUDENT RECORD SYSTEM MENU   ");
+    console.log("==================================");
+    console.log("1. Add student");
+    console.log("2. Display all students");
+    console.log("3. Calculate average score");
+    console.log("4. Quit");
+
+    const choice = readline.question("Enter your choice (1-4): ").trim();
+
+    switch (choice) {
+      case "1":
+        addStudent();
+        break;
+      case "2":
+        displayAllStudents();
+        break;
+      case "3":
+        calculateAverage();
+        break;
+      case "4":
+        console.log("\nExiting Student Record System. Goodbye!");
+        isRunning = false;
+        break;
+      default:
+        console.log("\nInvalid choice! Please enter a number between 1 and 4.");
+        break;
+    }
+  }
+}
+
+// Run application
+startApp();
 
