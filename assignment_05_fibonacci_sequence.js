@@ -54,4 +54,73 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+const readline = require('readline-sync');
 
+/**
+ * PART A: Generates and prints the first N terms of the Fibonacci sequence.
+ */
+function printFibonacciTerms() {
+  const input = readline.question('How many terms? ');
+  const n = parseInt(input, 10);
+
+  // Validate that input is a positive integer (N > 0)
+  if (isNaN(n) || n <= 0) {
+    console.log('Error: Please enter a positive integer greater than 0.');
+    return;
+  }
+
+  const sequence = [];
+  let a = 0;
+  let b = 1;
+
+  for (let i = 0; i < n; i++) {
+    sequence.push(a);
+    const next = a + b;
+    a = b;
+    b = next;
+  }
+
+  console.log(`Fibonacci sequence: ${sequence.join(' ')}`);
+}
+
+/**
+ * PART B: Checks whether a user-entered number belongs to the Fibonacci sequence.
+ */
+function checkFibonacciNumber() {
+  const input = readline.question('\nEnter a number to check: ');
+  const num = parseInt(input, 10);
+
+  // Validate input is a non-negative integer
+  if (isNaN(num) || num < 0) {
+    console.log('Error: Please enter a non-negative integer.');
+    return;
+  }
+
+  // Handle base cases (0 and 1 are Fibonacci numbers)
+  let a = 0;
+  let b = 1;
+  let isFibonacci = false;
+
+  // Loop until we reach or exceed the target number
+  while (a <= num) {
+    if (a === num) {
+      isFibonacci = true;
+      break;
+    }
+    const next = a + b;
+    a = b;
+    b = next;
+  }
+
+  if (isFibonacci) {
+    console.log(`${num} is a Fibonacci number.`);
+  } else {
+    console.log(`${num} is NOT a Fibonacci number.`);
+  }
+}
+
+// =============================================================================
+// MAIN EXECUTION
+// =============================================================================
+printFibonacciTerms();
+checkFibonacciNumber();
